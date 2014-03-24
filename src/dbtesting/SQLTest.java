@@ -14,20 +14,21 @@ public class SQLTest implements Test {
 
 
 	//String url = "jdbc:postgresql://localhost/test";
-	String url = "jdbc:sqlite://localhost/test";
+	String url = "jdbc:sqlite:test.db";
 	String user = "admin";
 	String password = "";
 
 	@Override
 	public void init() throws Exception
 	{
+		Class.forName("org.sqlite.JDBC");
 		con = DriverManager.getConnection(url, user, password);
 		st = con.createStatement();
-		rs = st.executeQuery("SELECT VERSION()");
-
-		if (rs.next()) {
+		
+		//rs = st.executeQuery("SELECT VERSION()");
+		/*if (rs.next()) {
 			System.out.println(rs.getString(1));
-		}
+		}*/
 	}
 
 	@Override
@@ -54,13 +55,17 @@ public class SQLTest implements Test {
 	@Override
 	public void readDocument(String collectionName, int key) throws Exception
 	{
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		rs = st.executeQuery("SELECT * FROM " + collectionName + " WHERE id=" + key);
+		rs.getBytes(1);
+		rs.getBytes(2);
+		rs.getBytes(3);
 	}
 
 	@Override
 	public void readValue(String collectionName, int key, int value) throws Exception
 	{
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		rs = st.executeQuery("SELECT a FROM " + collectionName + " WHERE id=" + key);
+		rs.getBytes(1);
 	}
 
 	@Override
@@ -80,7 +85,13 @@ public class SQLTest implements Test {
 	@Override
 	public void updateValue(String collectionName, int key, byte[] data) throws Exception
 	{
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		String sql = "UPDATE " + collectionName + " SET a=? WHERE id=?";
+		PreparedStatement statement = con.prepareStatement(sql);
+
+		statement.setBytes(1, data);
+		statement.setInt(2, key);
+		statement.execute();
+		statement.close();
 	}
 
 	@Override
@@ -98,7 +109,7 @@ public class SQLTest implements Test {
 	@Override
 	public void cleanup() throws Exception
 	{
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		con.close();
 	}
 
 }
