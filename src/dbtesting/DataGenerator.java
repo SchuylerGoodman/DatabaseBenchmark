@@ -1,3 +1,5 @@
+package dbtesting;
+
 /**
  * Created by schuyler on 3/21/14.
  */
