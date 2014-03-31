@@ -42,16 +42,16 @@ public class CassandraTest implements Test {
         if (rows.size() != 1) {
             System.out.println("Error in CassandraTest.ReadDocument -- Should only have one row in read, found " + rows.size());
         }
-        for (Row row : rows) {
-            row.toString();
-        }
+//        for (Row row : rows) {
+////            row.toString();
+//        }
     }
 
     @Override
     public void readValue(String collectionName, int key, int value) throws Exception {
         ResultSet rs = getSession().execute("SELECT a FROM " + client.keyspace + "." + collectionName + " WHERE id = " + key);
         Row row = rs.one();
-        row.toString();
+//        row.toString();
     }
 
     @Override
@@ -112,6 +112,7 @@ class CassandraClient {
     }
 
     public void close() {
+        session.execute("DROP KEYSPACE " + keyspace);
         session.close();
         cluster.close();
     }
