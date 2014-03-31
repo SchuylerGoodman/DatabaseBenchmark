@@ -90,6 +90,8 @@ public class App
 			System.out.println("Deleting Collection");
 			t.deleteCollection("a");
 
+            t.cleanup();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
