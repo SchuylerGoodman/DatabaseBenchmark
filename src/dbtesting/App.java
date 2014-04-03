@@ -27,11 +27,14 @@ public class App
 
     public static void main( String[] args )
     {
+    	Class[] tests = new Class[]{MySQLTest.class, SQLiteTest.class, PostgresTest.class, MongoTest.class, RedisTest.class};
+
 		try {
 
 			DataGenerator gen = new StaticGenerator();
 
-			Test t = new SQLTest();
+			//Test t = new MySQLTest();
+			Test t = (Test)tests[2].newInstance();
 			t.init();
 			System.out.println("Creating Collection");
 			t.createCollection("a");

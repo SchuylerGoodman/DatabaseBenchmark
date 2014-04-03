@@ -6,22 +6,25 @@ import java.sql.*;
  *
  * @author thomas
  */
-public class SQLTest implements Test {
+abstract class SQLTest implements Test {
 
 	Connection con = null;
 	Statement st = null;
 	ResultSet rs = null;
 
+	String url;
+	String postCreate = "";
 
-	//String url = "jdbc:postgresql://localhost/test";
-	String url = "jdbc:sqlite:test.db";
 	String user = "admin";
 	String password = "";
+
+	SQLTest(String url) {
+		this.url = url;
+	}
 
 	@Override
 	public void init() throws Exception
 	{
-		Class.forName("org.sqlite.JDBC");
 		con = DriverManager.getConnection(url, user, password);
 		st = con.createStatement();
 		
@@ -35,8 +38,7 @@ public class SQLTest implements Test {
 	public void createCollection(String collectionName) throws Exception
 	{
 		String type = "bytea";
-		String post = ""; // ENGINE=InnoDB;
-		st.execute("CREATE TABLE "+collectionName+" (ID	INTEGER, a "+type+", b "+type+", c "+type+")" + post);
+		st.execute("CREATE TABLE "+collectionName+" (ID	INTEGER, a "+type+", b "+type+", c "+type+")" + postCreate);
 	}
 
 	@Override
