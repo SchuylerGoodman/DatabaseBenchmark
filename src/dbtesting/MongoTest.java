@@ -7,7 +7,7 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-public class MongoTest implements Test
+public class MongoTest extends Test
 {
 	MongoClient mongoClient; 
 	DB db; 
@@ -17,78 +17,84 @@ public class MongoTest implements Test
 	public void init() throws Exception 
 	{
 		mongoClient = new MongoClient(); 
-		db = mongoClient.getDB("monTestFinal"); 
+		db = mongoClient.getDB("test");
 	}
 
 	@Override
-	public void createCollection(String collectionName) throws Exception 
+	public long createCollection(String collectionName) throws Exception
 	{ 
-		
+		tick();
 		collection =  db.createCollection(collectionName, null);
-		
+		return tock();
 	}
 
 	@Override
-	public void createDocument(String collectionName, int key, byte[] data0, byte[] data1, byte[] data2) throws Exception {
-		BasicDBObject doc = new BasicDBObject("key", key).append("a", data0).append("b", data1).append("c", data2); 
+	public long createDocument(String collectionName, int key, byte[] data0, byte[] data1, byte[] data2) throws Exception {
+		BasicDBObject doc = new BasicDBObject("key", key).append("a", data0).append("b", data1).append("c", data2);
+        tick();
 		collection.insert(doc); 
-		
+		return tock();
 	}
 
 	@Override
-	public void readDocument(String collectionName, int key) throws Exception {
+	public long readDocument(String collectionName, int key) throws Exception {
+
 		BasicDBObject query = new BasicDBObject("key", key);
+
+        tick();
 		DBCursor cursor = collection.find(query);
-		DBObject o = cursor.next();
-		
 		cursor.close();
+        return tock();
 
 	}
 
 	@Override
-	public void readValue(String collectionName, int key, int value)
+	public long readValue(String collectionName, int key, int value)
 			throws Exception {
 		BasicDBObject query = new BasicDBObject("key", key);
 		BasicDBObject project = new BasicDBObject("a", value);
+
+        tick();
 		DBCursor cursor = collection.find(query,project);
-		
-		DBObject o = cursor.next();
-	
 		cursor.close();
-		
+        return tock();
 	}
 
 	@Override
-	public void updateDocument(String collectionName, int key, byte[] data0,
+	public long updateDocument(String collectionName, int key, byte[] data0,
 			byte[] data1, byte[] data2) throws Exception {
 		BasicDBObject query = new BasicDBObject("key", key);
 		BasicDBObject update = new BasicDBObject("key", key).append("a", data0).append("b", data1).append("c", data2); 
-		
+
+        tick();
 		collection.findAndModify(query, update); 
-		
-		
+		return tock();
 	}
 
 	@Override
-	public void updateValue(String collectionName, int key, byte[] data)
+	public long updateValue(String collectionName, int key, byte[] data)
 			throws Exception {
 		BasicDBObject query = new BasicDBObject("key", key);
 		BasicDBObject update = new BasicDBObject("key", key).append("a", data); 
-		
+
+        tick();
 		collection.findAndModify(query, update); 
-		
+		return tock();
 	}
 
 	@Override
-	public void deleteDocument(String collectionName, int key) throws Exception {
+	public long deleteDocument(String collectionName, int key) throws Exception {
 		BasicDBObject query = new BasicDBObject("key", key);
-		collection.remove(query); 
+        tick();
+		collection.remove(query);
+        return tock();
 	}
 
 	@Override
-	public void deleteCollection(String collectionName) throws Exception {
+	public long deleteCollection(String collectionName) throws Exception {
+        tick();
 		collection.drop();
-		
+		return tock();
 	}
 
 	@Override

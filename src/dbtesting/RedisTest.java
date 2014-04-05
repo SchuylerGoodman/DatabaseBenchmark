@@ -12,7 +12,7 @@ import redis.clients.jedis.Jedis;
  *
  * @author Owner
  */
-public class RedisTest implements Test
+public class RedisTest extends Test
 {
 
     private Jedis jedis;
@@ -25,13 +25,15 @@ public class RedisTest implements Test
     }
 
     @Override
-    public void createCollection(String collectionName) throws Exception 
+    public long createCollection(String collectionName) throws Exception
     {
+        tick();
         jedis.set(collectionName, "created");
+        return tock();
     }
 
     @Override
-    public void createDocument(String collectionName, int key, byte[] data0, byte[] data1, byte[] data2) throws Exception 
+    public long createDocument(String collectionName, int key, byte[] data0, byte[] data1, byte[] data2) throws Exception
     {
     	collectionName=collectionName.concat(Integer.toString(key));
     	byte[] list=new byte[data0.length+data1.length+data2.length];
@@ -44,24 +46,30 @@ public class RedisTest implements Test
             else
                 list[i]=data2[i-(data1.length+data0.length)];
         }
+        tick();
     	jedis.set(collectionName.getBytes(), list);
+        return tock();
     }
 
     @Override
-    public void readDocument(String collectionName, int key) throws Exception 
+    public long readDocument(String collectionName, int key) throws Exception
     {
-       collectionName=collectionName.concat(Integer.toString(key));
-       jedis.get(collectionName);
+        collectionName=collectionName.concat(Integer.toString(key));
+        tick();
+        jedis.get(collectionName);
+        return tock();
     }
 
     @Override
-    public void readValue(String collectionName, int key, int value) throws Exception 
+    public long readValue(String collectionName, int key, int value) throws Exception
     {
+        tick();
         jedis.get(collectionName.concat(Integer.toString(key)));
+        return tock();
     }
 
     @Override
-    public void updateDocument(String collectionName, int key, byte[] data0, byte[] data1, byte[] data2) throws Exception 
+    public long updateDocument(String collectionName, int key, byte[] data0, byte[] data1, byte[] data2) throws Exception
     {
     	collectionName=collectionName.concat(Integer.toString(key));
     	byte[] list=new byte[data0.length+data1.length+data2.length];
@@ -74,25 +82,33 @@ public class RedisTest implements Test
             else
                 list[i]=data2[i-(data1.length+data0.length)];
         }
+        tick();
     	jedis.set(collectionName.getBytes(), list);
+        return tock();
     }
 
     @Override
-    public void updateValue(String collectionName, int key, byte[] data) throws Exception 
+    public long updateValue(String collectionName, int key, byte[] data) throws Exception
     {
+        tick();
     	jedis.set(collectionName.concat(Integer.toString(key)).getBytes(), data);
+        return tock();
     }
 
     @Override
-    public void deleteDocument(String collectionName, int key) throws Exception 
+    public long deleteDocument(String collectionName, int key) throws Exception
     {
+        tick();
         jedis.expire(collectionName.concat(Integer.toString(key)).getBytes(), 1);
+        return tock();
     }
 
     @Override
-    public void deleteCollection(String collectionName) throws Exception 
+    public long deleteCollection(String collectionName) throws Exception
     {
+        tick();
         jedis.expire(collectionName.getBytes(), 1);
+        return tock();
     }
 
     @Override
