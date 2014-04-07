@@ -43,6 +43,7 @@ public class MongoTest extends Test
 
         tick();
 		DBCursor cursor = collection.find(query);
+        cursor.next();
 		cursor.close();
         return tock();
 
@@ -56,6 +57,7 @@ public class MongoTest extends Test
 
         tick();
 		DBCursor cursor = collection.find(query,project);
+        cursor.next();
 		cursor.close();
         return tock();
 	}

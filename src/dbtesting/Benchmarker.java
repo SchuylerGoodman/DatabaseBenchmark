@@ -234,7 +234,7 @@ public class Benchmarker
 
         private void saveSingleToCSV(String fileName, long[][] data) {
 
-            String fullName = "data/" + fileName + ".csv";
+            String fullName = "data/" + fileName + ".tab";
             log.fine("Attempting to save data to " + fullName);
             try {
 
